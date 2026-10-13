@@ -1,0 +1,10 @@
+﻿namespace MYAcademy_PortfolioProject.Entities
+{
+    public class HeroTitle
+    {
+        public int HeroTitleID { get; set; }
+        public string Title { get; set; }
+        public int Order { get; set; }
+        public bool IsActive { get; set; }
+    }
+}
