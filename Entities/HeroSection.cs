@@ -2,7 +2,7 @@
 {
     public class HeroSection
     {
-        public int HeroID { get; set; }
+        public int HeroSectionID { get; set; }
         public string Greeting { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
