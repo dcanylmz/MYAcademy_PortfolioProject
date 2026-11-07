@@ -8,8 +8,7 @@
         public string Description { get; set; }
         public string CategoryName { get; set; }
         public bool IsActive { get; set; }
-        public DateTime SendDate { get; set; }
-        public bool IsRead { get; set; }
+
 
     }
 }

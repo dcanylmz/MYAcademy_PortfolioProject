@@ -1,0 +1,23 @@
+﻿@model List<Project>
+@{
+    ViewData["Title"] = "ProjectList";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<div class="container">
+    <br />
+    <table class="table table-bordered">
+        <tr>
+            <th>#</th>
+            <th>Proje Adi</th>
+            <th>Kategori</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ProjectID</td>
+                <td>@item.ProjectTitle</td>
+                <td>@item.Category.CategoryName</td>
+            </tr>
+        }
+    </table>
+</div>
