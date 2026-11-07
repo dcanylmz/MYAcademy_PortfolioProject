@@ -44,17 +44,21 @@
 ### 🌐 Herkese Açık Site
 
 #### 1. Ana sayfa (hero ve yazı animasyonu)
+<img width="1904" height="946" alt="01-ana-sayfa png" src="https://github.com/user-attachments/assets/ddeba8bb-ded3-433b-bfae-7258591703a6" />
 
 
 #### 2. Yetenekler ve deneyimler
 
+<img width="1903" height="946" alt="02-yetenekler-deneyimler png" src="https://github.com/user-attachments/assets/6669db66-5af1-47b2-99f3-c3753971a1fe" />
 
 
 #### 3. Projeler (kategori filtresi ve sıralama)
 
+<img width="1904" height="946" alt="03-projeler png" src="https://github.com/user-attachments/assets/268c691d-35db-4458-86dc-182accc0e17e" />
 
 
 #### 4. İletişim formu
+<img width="1904" height="943" alt="04-iletisim-formu png" src="https://github.com/user-attachments/assets/83ca9d9d-d806-4f88-ade5-e0fffa9b8765" />
 
 
 
@@ -62,26 +66,28 @@
 
 #### 5. Dashboard
 
-
+<img width="1901" height="943" alt="05-dashboard1 png" src="https://github.com/user-attachments/assets/6915a1c5-e471-48a0-a332-b1603c0f6f69" />
+<img width="1902" height="942" alt="06-dashboard2 png" src="https://github.com/user-attachments/assets/81df259f-0f43-4bc0-b5c0-1659f05c00f5" />
 
 #### 6. Proje listesi
 
-
+<img width="1919" height="941" alt="07-proje-listesi png" src="https://github.com/user-attachments/assets/6bfc4a00-d05a-4c3c-a15c-3fb329311760" />
 
 #### 7. Proje ekleme formu
 
-
+<img width="1917" height="941" alt="08-proje-formu png" src="https://github.com/user-attachments/assets/7ccada32-6f87-4228-8a4d-af951d3adf46" />
 
 #### 8. Gelen kutusu
 
-
+<img width="1919" height="944" alt="09-gelen-kutusu png" src="https://github.com/user-attachments/assets/b9fc329d-3097-4b63-b3f3-0c0c71c556c8" />
 
 #### 9. Mesaj detay modalı
 
+<img width="1918" height="942" alt="10-mesaj-modal png" src="https://github.com/user-attachments/assets/fe798ba0-da69-4658-8312-164072ca3c1c" />
 
 #### 10. Silme onayı
 
-
+<img width="1917" height="946" alt="11-silme-onayi png" src="https://github.com/user-attachments/assets/f19b24e9-7fe9-40df-98b8-fe25c9a14a64" />
 
 ---
 
