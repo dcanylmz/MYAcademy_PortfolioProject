@@ -1,23 +1,104 @@
-﻿@model List<Project>
+@model List<Project>
 @{
-    ViewData["Title"] = "ProjectList";
+    ViewData["Title"] = "Projeler";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    var selectedSort = ViewBag.SelectedSort as string ?? "newest";
 }
-<div class="container">
-    <br />
-    <table class="table table-bordered">
-        <tr>
-            <th>#</th>
-            <th>Proje Adi</th>
-            <th>Kategori</th>
-        </tr>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.ProjectID</td>
-                <td>@item.ProjectTitle</td>
-                <td>@item.Category.CategoryName</td>
-            </tr>
-        }
-    </table>
+<partial name="_AdminFormStyles" />
+
+<div class="af container-fluid py-3">
+    <div class="af-card">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div class="af-head mb-0">
+                <div class="af-icon"><i class="bi bi-code-slash"></i></div>
+                <div>
+                    <h4>Projeler</h4>
+                    <small>@Model.Count proje listeleniyor. Pasif projeler sitede görünmez.</small>
+                </div>
+            </div>
+            <a asp-action="CreateProject" class="af-btn"><i class="bi bi-plus-lg me-1"></i> Yeni Proje</a>
+        </div>
+
+        <form method="get" class="row g-2 mb-4">
+            <div class="col-md-4">
+                <select name="categoryId" asp-items="@(ViewBag.Categories as SelectList)" class="form-select">
+                    <option value="">Tüm kategoriler</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select name="sort" class="form-select">
+                    <option value="newest" selected="@(selectedSort == "newest")">En yeni önce</option>
+                    <option value="oldest" selected="@(selectedSort == "oldest")">En eski önce</option>
+                    <option value="title" selected="@(selectedSort == "title")">Ada göre (A-Z)</option>
+                </select>
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="af-btn">Filtrele</button>
+                <a asp-action="ProjectList" class="af-btn-light">Temizle</a>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table af-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Görsel</th>
+                        <th>Proje</th>
+                        <th>Kategori</th>
+                        <th>Tarih</th>
+                        <th>Durum</th>
+                        <th class="text-end">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" class="af-thumb" alt="@item.ProjectTitle" />
+                                }
+                                else
+                                {
+                                    <div class="af-thumb af-thumb-empty"><i class="bi bi-image"></i></div>
+                                }
+                            </td>
+                            <td>
+                                <div class="fw-semibold">@item.ProjectTitle</div>
+                                <div class="small text-muted">@item.Technology</div>
+                            </td>
+                            <td>@(item.Category?.CategoryName)</td>
+                            <td>@(item.CreatedDate.Year > 1 ? item.CreatedDate.ToString("dd.MM.yyyy") : "-")</td>
+                            <td>
+                                <form asp-action="ToggleProjectStatus" asp-route-id="@item.ProjectID" method="post" class="d-inline">
+                                    <button type="submit" class="af-badge @(item.IsActive ? "on" : "off")" title="Durumu değiştir">
+                                        @(item.IsActive ? "Aktif" : "Pasif")
+                                    </button>
+                                </form>
+                            </td>
+                            <td class="text-end">
+                                <a asp-action="UpdateProject" asp-route-id="@item.ProjectID" class="af-icon-btn" title="Düzenle">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form asp-action="DeleteProject" asp-route-id="@item.ProjectID" method="post" class="d-inline">
+                                    <button type="button" class="af-icon-btn danger js-delete" data-name="@item.ProjectTitle" title="Sil">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-5">Gösterilecek proje bulunamadı.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
+<partial name="_AdminAlerts" />

@@ -1,31 +1,248 @@
-﻿@model List<MYAcademy_PortfolioProject.Entities.Message>
+@model List<Message>
 @{
-    ViewData["Title"] = "MessageList";
+    ViewData["Title"] = "Gelen Mesajlar";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    var selectedStatus = ViewBag.Status as string ?? "all";
 }
-<div class="container">
-    <br />
-    <table class="table table-bordered">
-        <tr>
-            <th>#</th>
-            <th>Gonderen</th>
-            <th>Konu</th>
-            <th>Tarih</th>
-            <th>Mesaji Ac</th>
-            <th>Mesaji Duzenle</th>
-            <th>Mesaji Sil</th>
-        </tr>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.MessageID</td>
-                <td>@item.SenderName</td>
-                <td>@item.SenderSubject</td>
-                <td>@item.SendDate.ToString("dd MMM yyyy")</td>
-                <td><a href="/Admin/Message/MessageDetail/@item.MessageID" class="btn btn-info">Mesaji Ac</a></td>
-                <td><a href="/Admin/Message/UpdateMessage/@item.MessageID" class="btn btn-success">Mesaji Duzenle</a></td>
-                <td><a href="/Admin/Message/DeleteMessage/@item.MessageID" class="btn btn-danger">Mesaji Sil</a></td>
-            </tr>
-        }
-    </table>
+<partial name="_AdminFormStyles" />
+
+<style>
+    .msg-row { cursor: pointer; }
+    .msg-row:hover { background: #faf9f6; }
+    .msg-row-unread { background: #f3f8f5; font-weight: 600; }
+    .msg-row-unread td:first-child { box-shadow: inset 3px 0 0 var(--g); }
+    .msg-row-unread:hover { background: #ecf4ef; }
+    #mmDetail { white-space: pre-wrap; word-break: break-word; }
+</style>
+
+<div class="af container-fluid py-3">
+    <div class="af-card">
+        <div class="af-head">
+            <div class="af-icon"><i class="bi bi-inbox"></i></div>
+            <div>
+                <h4>Gelen Mesajlar</h4>
+                <small><span data-unread-count>@ViewBag.UnreadCount</span> okunmamış mesaj. Satıra tıklayarak mesajı açabilirsiniz.</small>
+            </div>
+        </div>
+
+        <form method="get" class="row g-2 mb-4">
+            <div class="col-md-5">
+                <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Gönderen veya konuya göre ara..." />
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="all" selected="@(selectedStatus == "all")">Tüm mesajlar</option>
+                    <option value="unread" selected="@(selectedStatus == "unread")">Okunmamış</option>
+                    <option value="read" selected="@(selectedStatus == "read")">Okunmuş</option>
+                </select>
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="af-btn">Ara</button>
+                <a asp-action="MessageList" class="af-btn-light">Temizle</a>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table af-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Gönderen</th>
+                        <th>Konu</th>
+                        <th>Tarih</th>
+                        <th>Durum</th>
+                        <th class="text-end">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody id="messageTableBody">
+                    @foreach (var item in Model)
+                    {
+                        <tr class="msg-row @(item.IsRead ? "" : "msg-row-unread")" data-id="@item.MessageID" data-read="@(item.IsRead ? "true" : "false")">
+                            <td>
+                                <div>@item.SenderName</div>
+                                <div class="small text-muted fw-normal">@item.SenderEmail</div>
+                            </td>
+                            <td>@item.SenderSubject</td>
+                            <td class="text-nowrap fw-normal">@item.SendDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>
+                                <span class="af-badge js-status-badge @(item.IsRead ? "off" : "on")">@(item.IsRead ? "Okundu" : "Okunmadı")</span>
+                            </td>
+                            <td class="text-end text-nowrap">
+                                <button type="button" class="af-icon-btn js-open" title="Mesajı aç">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button type="button" class="af-icon-btn js-toggle" title="@(item.IsRead ? "Okunmadı olarak işaretle" : "Okundu olarak işaretle")">
+                                    <i class="bi @(item.IsRead ? "bi-envelope" : "bi-envelope-open")"></i>
+                                </button>
+                                <form asp-action="DeleteMessage" asp-route-id="@item.MessageID" method="post" class="d-inline">
+                                    <button type="button" class="af-icon-btn danger js-delete" data-name="@item.SenderSubject" title="Sil">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-5">Gösterilecek mesaj bulunamadı.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
+@* AJAX istekleri için antiforgery token *@
+@Html.AntiForgeryToken()
+
+<!-- Mesaj detay modalı -->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="mmSubject" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" style="border-radius:16px;">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title" id="mmSubject"></h5>
+                    <div class="small text-muted">
+                        <span id="mmName"></span> &middot; <span id="mmEmail"></span> &middot; <span id="mmDate"></span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <p id="mmDetail" class="mb-0"></p>
+            </div>
+            <div class="modal-footer">
+                <a id="mmReply" class="af-btn-light"><i class="bi bi-reply me-1"></i> E-posta ile yanıtla</a>
+                <button type="button" id="mmToggle" class="af-btn-light"></button>
+                <button type="button" class="af-btn" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<partial name="_AdminAlerts" />
+
+<script>
+    (function () {
+        const urls = {
+            detail: '@Url.Action("MessageDetail", "Message", new { area = "Admin" })',
+            status: '@Url.Action("SetReadStatus", "Message", new { area = "Admin" })'
+        };
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        const modal = new bootstrap.Modal(document.getElementById('messageModal'));
+        const toggleButton = document.getElementById('mmToggle');
+        let current = null; // modalda açık olan mesaj { id, isRead }
+
+        function showError() {
+            Swal.fire({ icon: 'error', title: 'İşlem başarısız oldu', text: 'Lütfen sayfayı yenileyip tekrar deneyin.' });
+        }
+
+        function updateRow(id, isRead) {
+            const row = document.querySelector('tr.msg-row[data-id="' + id + '"]');
+            if (!row) return;
+            row.dataset.read = isRead ? 'true' : 'false';
+            row.classList.toggle('msg-row-unread', !isRead);
+
+            const badge = row.querySelector('.js-status-badge');
+            badge.textContent = isRead ? 'Okundu' : 'Okunmadı';
+            badge.classList.toggle('on', !isRead);
+            badge.classList.toggle('off', isRead);
+
+            const toggle = row.querySelector('.js-toggle');
+            toggle.title = isRead ? 'Okunmadı olarak işaretle' : 'Okundu olarak işaretle';
+            toggle.querySelector('i').className = 'bi ' + (isRead ? 'bi-envelope' : 'bi-envelope-open');
+        }
+
+        function updateUnreadCount(count) {
+            document.querySelectorAll('[data-unread-count]').forEach(function (el) { el.textContent = count; });
+            const badge = document.getElementById('sidebarUnreadBadge'); // sidebar rozeti
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? '' : 'none';
+            }
+            const dot = document.getElementById('navUnreadDot'); // navbar zil noktası
+            if (dot) dot.style.display = count > 0 ? '' : 'none';
+        }
+
+        async function setReadStatus(id, isRead) {
+            const response = await fetch(urls.status, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ id: id, isRead: isRead, __RequestVerificationToken: token })
+            });
+            if (!response.ok) throw new Error('Durum güncellenemedi');
+            const data = await response.json();
+            updateRow(id, data.isRead);
+            updateUnreadCount(data.unreadCount);
+            return data.isRead;
+        }
+
+        function renderToggleButton() {
+            toggleButton.textContent = current.isRead ? 'Okunmadı olarak işaretle' : 'Okundu olarak işaretle';
+        }
+
+        async function openMessage(id) {
+            try {
+                const response = await fetch(urls.detail + '?id=' + encodeURIComponent(id));
+                if (!response.ok) throw new Error('Mesaj alınamadı');
+                const m = await response.json();
+
+                // textContent kullanıyoruz: gönderenin yazdığı içerik HTML olarak yorumlanmaz.
+                document.getElementById('mmSubject').textContent = m.senderSubject;
+                document.getElementById('mmName').textContent = m.senderName;
+                document.getElementById('mmEmail').textContent = m.senderEmail;
+                document.getElementById('mmDate').textContent = m.sendDate;
+                document.getElementById('mmDetail').textContent = m.messageDetail;
+                document.getElementById('mmReply').href =
+                    'mailto:' + m.senderEmail + '?subject=' + encodeURIComponent('Re: ' + m.senderSubject);
+
+                current = { id: m.id, isRead: m.isRead };
+                renderToggleButton();
+                modal.show();
+
+                // Mesaj açıldığı anda okundu olarak işaretlenir.
+                if (!m.isRead) {
+                    current.isRead = await setReadStatus(m.id, true);
+                    renderToggleButton();
+                }
+            } catch (err) {
+                showError();
+            }
+        }
+
+        toggleButton.addEventListener('click', async function () {
+            if (!current) return;
+            try {
+                current.isRead = await setReadStatus(current.id, !current.isRead);
+                renderToggleButton();
+                if (!current.isRead) modal.hide(); // okunmadı yapılınca listeye dön
+            } catch (err) {
+                showError();
+            }
+        });
+
+        document.getElementById('messageTableBody').addEventListener('click', async function (e) {
+            const row = e.target.closest('tr.msg-row');
+            if (!row) return;
+
+            const toggle = e.target.closest('.js-toggle');
+            if (toggle) {
+                try {
+                    await setReadStatus(row.dataset.id, row.dataset.read !== 'true');
+                } catch (err) {
+                    showError();
+                }
+                return;
+            }
+
+            if (e.target.closest('form')) return; // silme butonu kendi onayını gösterir
+            openMessage(row.dataset.id);
+        });
+
+        // Dashboard'dan ?openId=5 ile gelinirse o mesajın modalını otomatik aç.
+        const openId = new URLSearchParams(window.location.search).get('openId');
+        if (openId) openMessage(openId);
+    })();
+</script>

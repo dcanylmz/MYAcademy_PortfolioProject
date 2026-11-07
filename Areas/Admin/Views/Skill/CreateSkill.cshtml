@@ -1,0 +1,13 @@
+@model Skill
+@{
+    ViewData["Title"] = "Yeni Yetenek";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["FormAction"] = "CreateSkill";
+    ViewData["FormTitle"] = "Yeni Yetenek Ekle";
+    ViewData["FormSubtitle"] = "Yetenek adını ve 0-100 arası seviyeyi girin.";
+    ViewData["SubmitText"] = "Yeteneği Kaydet";
+}
+<partial name="_AdminFormStyles" />
+<div class="af container-fluid py-3">
+    <partial name="_SkillForm" model="Model" />
+</div>

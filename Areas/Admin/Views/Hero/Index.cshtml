@@ -1,0 +1,44 @@
+@model HeroSection?
+@{
+    ViewData["Title"] = "Ana Sayfa";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<partial name="_AdminFormStyles" />
+<partial name="_AdminSummaryStyles" />
+
+<div class="af container-fluid py-3">
+    <div class="af-card">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div class="af-head mb-0">
+                <div class="af-icon"><i class="bi bi-house-door"></i></div>
+                <div>
+                    <h4>Ana Sayfa (Hero)</h4>
+                    <small>Sitenin en üstündeki karşılama alanı.</small>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-controller="HeroTitle" asp-action="HeroTitleList" class="af-btn-light"><i class="bi bi-type me-1"></i> Yazı Animasyonu</a>
+                <a asp-action="UpdateHero" class="af-btn"><i class="bi bi-pencil me-1"></i> @(Model == null ? "Bilgileri Ekle" : "Düzenle")</a>
+            </div>
+        </div>
+
+        @if (Model == null)
+        {
+            <div class="af-empty">Henüz ana sayfa bilgisi girilmedi.</div>
+        }
+        else
+        {
+            @if (!string.IsNullOrEmpty(Model.MainImageURL))
+            {
+                <div class="mb-4"><img src="@Model.MainImageURL" alt="Ana görsel" class="af-thumb" style="width:96px;height:96px;" /></div>
+            }
+            <dl class="af-kv">
+                <dt>Karşılama</dt><dd>@Model.Greeting</dd>
+                <dt>Başlık</dt><dd>@Model.Title</dd>
+                <dt>Açıklama</dt><dd>@Model.Description</dd>
+            </dl>
+        }
+    </div>
+</div>
+
+<partial name="_AdminAlerts" />

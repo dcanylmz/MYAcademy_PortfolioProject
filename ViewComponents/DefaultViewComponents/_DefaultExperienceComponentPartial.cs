@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using MYAcademy_PortfolioProject.Context;
 
 namespace MYAcademy_PortfolioProject.ViewComponents.DefaultViewComponents
@@ -11,10 +11,11 @@ namespace MYAcademy_PortfolioProject.ViewComponents.DefaultViewComponents
         {
             _context = context;
         }
+
         public IViewComponentResult Invoke()
         {
-            var values = _context.Experiences.ToList();
-
+            // Pasif deneyimler admin panelinde yönetilir ama sitede gösterilmez.
+            var values = _context.Experiences.Where(x => x.IsActive).ToList();
             return View(values);
         }
     }

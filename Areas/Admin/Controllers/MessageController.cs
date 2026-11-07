@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using MYAcademy_PortfolioProject.Context;
-using MYAcademy_PortfolioProject.Entities;
-using System.Net.WebSockets;
 
 namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
 {
+    // Gelen kutusu: mesaj içeriği düzenlenmez, yalnızca okunma durumu yönetilir.
     [Area("Admin")]
-
     public class MessageController : Controller
     {
         private readonly PortfolioContext _context;
@@ -16,49 +14,88 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
             _context = context;
         }
 
-        public IActionResult MessageList()
+        // En yeniden eskiye listeler; gönderen adı veya konuya göre arama ve durum filtresi vardır.
+        public IActionResult MessageList(string? search, string status = "all")
         {
-            var values = _context.Messages.ToList();
+            var query = _context.Messages.AsQueryable();
+
+            var term = search?.Trim();
+            if (!string.IsNullOrEmpty(term))
+                query = query.Where(x => x.SenderName.Contains(term) || x.SenderSubject.Contains(term));
+
+            query = status switch
+            {
+                "unread" => query.Where(x => !x.IsRead),
+                "read" => query.Where(x => x.IsRead),
+                _ => query
+            };
+
+            ViewBag.Search = term;
+            ViewBag.Status = status;
+            ViewBag.UnreadCount = _context.Messages.Count(x => !x.IsRead);
+
+            var values = query
+                .OrderByDescending(x => x.SendDate)
+                .ThenByDescending(x => x.MessageID)
+                .ToList();
             return View(values);
         }
 
+        // Modal içeriği için JSON döner (sayfa yenilenmez). Durumu değiştirmez.
         [HttpGet]
-        public IActionResult CreateMessage()
+        public async Task<IActionResult> MessageDetail(int id)
         {
-            return View();
+            var message = await _context.Messages.FindAsync(id);
+            if (message == null)
+                return NotFound();
+
+            return Json(new
+            {
+                id = message.MessageID,
+                senderName = message.SenderName,
+                senderEmail = message.SenderEmail,
+                senderSubject = message.SenderSubject,
+                messageDetail = message.MessageDetail,
+                sendDate = message.SendDate.ToString("dd.MM.yyyy HH:mm"),
+                isRead = message.IsRead
+            });
         }
 
         [HttpPost]
-        public IActionResult CreateMessage(Message message)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SetReadStatus(int id, bool isRead)
         {
-            message.SendDate = DateTime.Now;
-            message.IsRead = false;
-            _context.Messages.Add(message);
-            _context.SaveChanges();
-            return RedirectToAction("MessageList");
-        }
+            var message = await _context.Messages.FindAsync(id);
+            if (message == null)
+                return NotFound();
 
-        [HttpGet]
-        public IActionResult UpdateMessage(int id)
-        {
-            var value = _context.Messages.Find(id);
-            return View(value);
+            message.IsRead = isRead;
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                success = true,
+                isRead = message.IsRead,
+                unreadCount = _context.Messages.Count(x => !x.IsRead)
+            });
         }
 
         [HttpPost]
-        public IActionResult UpdateMessage(Message message)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteMessage(int id)
         {
-            _context.Messages.Update(message);
-            _context.SaveChanges();
-            return RedirectToAction("MessageList");
-        }
-        public ActionResult DeleteMessage(int id)
-        {
-            var value = _context.Messages.Find(id);
-            _context.Messages.Remove(value);
-            _context.SaveChanges();
-            return RedirectToAction("MessageList");
-        }
+            var message = await _context.Messages.FindAsync(id);
+            if (message == null)
+            {
+                TempData["ErrorMessage"] = "Silinecek mesaj bulunamadı.";
+                return RedirectToAction(nameof(MessageList));
+            }
 
+            _context.Messages.Remove(message);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Mesaj silindi.";
+            return RedirectToAction(nameof(MessageList));
+        }
     }
 }

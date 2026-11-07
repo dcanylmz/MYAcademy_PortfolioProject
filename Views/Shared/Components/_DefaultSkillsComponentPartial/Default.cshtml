@@ -1,0 +1,52 @@
+@model List<Skill>
+@if (Model.Any())
+{
+    <section id="skills">
+        <div class="container">
+            <div class="section-header text-center mx-auto reveal-on-scroll" style="max-width: 680px;">
+                <div class="eyebrow-badge">
+                    <i class="bi bi-stack"></i> TEKNOLOJİ YIĞINIM
+                </div>
+                <h2 class="section-title">Kullandığım Teknolojiler ve Uzmanlık Alanlarım</h2>
+            </div>
+
+            <div class="row g-4">
+                @foreach (var skill in Model)
+                {
+                    var icon = string.IsNullOrWhiteSpace(skill.IconURL) ? "bi-stars"
+                        : (skill.IconURL.StartsWith("bi-") ? skill.IconURL : "bi-stars");
+
+                    <div class="col-md-6 col-lg-4 reveal-on-scroll">
+                        <div class="skill-card">
+                            <div class="skill-icon-box">
+                                <i class="bi @icon"></i>
+                            </div>
+                            <h3 class="h5 fw-bold mb-3">@skill.Title</h3>
+                            @if (!string.IsNullOrWhiteSpace(skill.Description))
+                            {
+                                <p class="text-muted small mb-3">@skill.Description</p>
+                            }
+
+                            <div class="d-flex justify-content-between small text-muted mb-1">
+                                <span>Seviye</span><span>@skill.SkillLevel%</span>
+                            </div>
+                            <div class="progress mb-3" style="height: 8px;" role="progressbar" aria-valuenow="@skill.SkillLevel" aria-valuemin="0" aria-valuemax="100" aria-label="@skill.Title seviyesi">
+                                <div class="progress-bar" style="width:@(skill.SkillLevel)%; background-color: var(--accent-sage-dark, #2f5d4e);"></div>
+                            </div>
+
+                            @if (skill.SkillItems.Any())
+                            {
+                                <div class="d-flex flex-wrap">
+                                    @foreach (var item in skill.SkillItems)
+                                    {
+                                        <span class="tech-badge">@item.SkillItemTitle</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}

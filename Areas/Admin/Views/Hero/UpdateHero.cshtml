@@ -1,0 +1,67 @@
+@model HeroSection
+@{
+    ViewData["Title"] = "Ana Sayfa Düzenle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<partial name="_AdminFormStyles" />
+
+<div class="af container-fluid py-3">
+    <form asp-action="UpdateHero" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="HeroSectionID" />
+        <div class="row g-4">
+            <div class="col-xl-8 col-lg-7">
+                <div class="af-card">
+                    <div class="af-head">
+                        <div class="af-icon"><i class="bi bi-house-door"></i></div>
+                        <div>
+                            <h4>Ana Sayfa Alanı</h4>
+                            <small>Karşılama metni, başlık ve açıklamayı düzenleyin.</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Greeting" class="form-label">Karşılama Metni</label>
+                        <input asp-for="Greeting" class="form-control" placeholder="Merhaba, ben Doğancan" />
+                        <span asp-validation-for="Greeting" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label">Başlık</label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger small"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Description" class="form-label">Açıklama</label>
+                        <textarea asp-for="Description" class="form-control" style="min-height:140px"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4 col-lg-5">
+                <div class="af-card d-flex flex-column">
+                    <div class="af-section-title">Ana Görsel</div>
+                    <div class="mb-3">
+                        <input type="file" name="imageFile" id="imageFile" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+                        @Html.ValidationMessage("imageFile", new { @class = "text-danger small" })
+                        <div class="form-text">JPG, PNG veya WEBP, en fazla 2 MB. Seçmezseniz mevcut görsel korunur.</div>
+                        <img id="imagePreview" class="af-preview @(string.IsNullOrEmpty(Model.MainImageURL) ? "d-none" : "")" src="@Model.MainImageURL" alt="Önizleme" />
+                    </div>
+                    <div class="mt-auto pt-3 d-grid gap-2">
+                        <button type="submit" class="af-btn">Kaydet</button>
+                        <a asp-action="Index" class="af-btn-light">Vazgeç</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('imageFile').addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        const preview = document.getElementById('imagePreview');
+        preview.src = URL.createObjectURL(file);
+        preview.classList.remove('d-none');
+    });
+</script>

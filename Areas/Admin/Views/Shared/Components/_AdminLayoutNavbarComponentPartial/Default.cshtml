@@ -1,36 +1,87 @@
-﻿<header class="admin-navbar">
+@{
+    // Breadcrumb'daki sayfa adı, o anki controller/action'a göre belirlenir.
+    var route = ViewContext.RouteData.Values;
+    var controller = route["controller"]?.ToString() ?? "";
+    var action = route["action"]?.ToString() ?? "";
+
+    var pageNames = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Dashboard/Index"] = "Dashboard",
+
+        ["Hero/Index"] = "Ana Sayfa (Hero)",
+        ["Hero/UpdateHero"] = "Ana Sayfa Düzenle",
+        ["HeroTitle/HeroTitleList"] = "Yazı Animasyonu",
+        ["HeroTitle/UpdateHeroTitle"] = "Unvan Düzenle",
+
+        ["About/AboutList"] = "Hakkımda",
+        ["About/UpdateAbout"] = "Hakkımda Düzenle",
+
+        ["Skill/SkillList"] = "Yeteneklerim",
+        ["Skill/CreateSkill"] = "Yeni Yetenek",
+        ["Skill/UpdateSkill"] = "Yetenek Düzenle",
+
+        ["Experience/ExperienceList"] = "Deneyimlerim",
+        ["Experience/CreateExperience"] = "Yeni Deneyim",
+        ["Experience/UpdateExperience"] = "Deneyim Düzenle",
+
+        ["Project/ProjectList"] = "Projelerim",
+        ["Project/CreateProject"] = "Yeni Proje",
+        ["Project/UpdateProject"] = "Proje Düzenle",
+
+        ["Category/CategoryList"] = "Kategoriler",
+        ["Category/UpdateCategory"] = "Kategori Düzenle",
+
+        ["Education/EducationList"] = "Eğitim",
+        ["Education/CreateEducation"] = "Yeni Eğitim",
+        ["Education/UpdateEducation"] = "Eğitim Düzenle",
+
+        ["Contact/ContactList"] = "İletişim",
+        ["Contact/UpdateContact"] = "İletişim Düzenle",
+
+        ["Social/SocialList"] = "Sosyal Medya",
+        ["Social/UpdateSocial"] = "Bağlantı Düzenle",
+
+        ["Message/MessageList"] = "Gelen Mesajlar"
+    };
+
+    // Listede yoksa (yeni eklenen bir sayfa gibi) controller adı gösterilir.
+    var pageName = pageNames.TryGetValue($"{controller}/{action}", out var knownName) ? knownName : controller;
+
+    int unread = ViewBag.UnreadMessageCount is int u ? u : 0;
+}
+<header class="admin-navbar">
     <div class="navbar-left">
         <button class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Menüyü Aç/Kapat">
             <i class="bi bi-list"></i>
         </button>
         <div class="breadcrumb-custom">
-            <a href="#"><i class="bi bi-house me-1"></i> Ana Sayfa</a>
+            <a href="/Admin/Dashboard/Index"><i class="bi bi-house me-1"></i> Ana Sayfa</a>
             <span class="separator">/</span>
-            <span class="active-crumb">#</span>
+            <span class="active-crumb">@pageName</span>
         </div>
     </div>
 
     <div class="navbar-right">
-        <!-- Search bar -->
-        <div class="nav-search-box">
+        <!-- Hızlı arama: gelen kutusunda gönderen veya konuya göre arar -->
+        <form class="nav-search-box" method="get" action="/Admin/Message/MessageList" role="search">
             <i class="bi bi-search"></i>
-            <input type="text" placeholder="Aranacak Kelime..." id="navQuickSearch">
-        </div>
+            <input type="text" name="search" placeholder="Mesajlarda ara..." id="navQuickSearch" aria-label="Mesajlarda ara">
+        </form>
 
-        <!-- Quick Action Button -->
-        <button class="btn-quick-add" onclick="openAddModal()">
+        <!-- Quick Action Button: yeni proje ekleme sayfasına gider -->
+        <a href="/Admin/Project/CreateProject" class="btn-quick-add" style="text-decoration:none;">
             <i class="bi bi-plus-lg"></i>
             <span>Hızlı Ekle</span>
-        </button>
-
-        <!-- Notification Bell -->
-        <a href="javascript:void(0)" class="icon-action-btn" title="Bildirimler" id="notificationBtn">
-            <i class="bi bi-bell"></i>
-            <span class="notification-dot"></span>
         </a>
 
-        <!-- Messages / Quick Access -->
-        <a href="javascript:void(0)" class="icon-action-btn" title="Mesajlar">
+        <!-- Bildirim: okunmamış mesajları gösterir, nokta yalnızca okunmamış mesaj varken görünür -->
+        <a href="/Admin/Message/MessageList?status=unread" class="icon-action-btn" title="@(unread > 0 ? $"{unread} okunmamış mesaj" : "Okunmamış mesaj yok")" id="notificationBtn">
+            <i class="bi bi-bell"></i>
+            <span class="notification-dot" id="navUnreadDot" style="@(unread > 0 ? "" : "display:none")"></span>
+        </a>
+
+        <!-- Gelen kutusu -->
+        <a href="/Admin/Message/MessageList" class="icon-action-btn" title="Gelen Mesajlar">
             <i class="bi bi-chat-left-text"></i>
         </a>
 

@@ -6,9 +6,10 @@ namespace MYAcademy_PortfolioProject.Controllers
 {
     public class HomeController : Controller
     {
+        // Kök adres (/) şablondaki "Welcome" sayfası yerine portfolyo sayfasına yönlenir.
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Default");
         }
 
         public IActionResult Privacy()

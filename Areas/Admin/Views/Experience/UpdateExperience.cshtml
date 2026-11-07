@@ -1,0 +1,13 @@
+@model Experience
+@{
+    ViewData["Title"] = "Deneyimi Güncelle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["FormAction"] = "UpdateExperience";
+    ViewData["FormTitle"] = "Deneyimi Güncelle";
+    ViewData["FormSubtitle"] = $"#{Model.ExperienceID} numaralı deneyimi düzenleyin.";
+    ViewData["SubmitText"] = "Değişiklikleri Kaydet";
+}
+<partial name="_AdminFormStyles" />
+<div class="af container-fluid py-3">
+    <partial name="_ExperienceForm" model="Model" />
+</div>

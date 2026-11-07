@@ -1,0 +1,102 @@
+@model About
+@{
+    ViewData["Title"] = "Hakkımda Düzenle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<partial name="_AdminFormStyles" />
+
+<div class="af container-fluid py-3">
+    <form asp-action="UpdateAbout" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="AboutId" />
+        <div class="row g-4">
+            <div class="col-xl-8 col-lg-7">
+                <div class="af-card">
+                    <div class="af-head">
+                        <div class="af-icon"><i class="bi bi-person"></i></div>
+                        <div>
+                            <h4>Hakkımda Bilgileri</h4>
+                            <small>Değişiklikler sitedeki "Beni Tanıyın" bölümüne yansır.</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="AboutNameSurname" class="form-label">Ad Soyad</label>
+                            <input asp-for="AboutNameSurname" class="form-control" />
+                            <span asp-validation-for="AboutNameSurname" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="AboutProfession" class="form-label">Meslek / Unvan</label>
+                            <input asp-for="AboutProfession" class="form-control" />
+                            <span asp-validation-for="AboutProfession" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="AboutLocation" class="form-label">Konum</label>
+                        <input asp-for="AboutLocation" class="form-control" />
+                        <span asp-validation-for="AboutLocation" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="AboutTitle" class="form-label">Bölüm Başlığı</label>
+                        <input asp-for="AboutTitle" class="form-control" />
+                        <span asp-validation-for="AboutTitle" class="text-danger small"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="AboutContent" class="form-label">Hakkımda Metni</label>
+                        <textarea asp-for="AboutContent" class="form-control" style="min-height:220px"></textarea>
+                        <div class="form-text">Paragraf başlatmak için yeni satıra geçin.</div>
+                        <span asp-validation-for="AboutContent" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4 col-lg-5">
+                <div class="af-card d-flex flex-column">
+                    <div class="af-section-title">Görsel ve Öne Çıkan Bilgi</div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Profil Görseli</label>
+                        <input type="file" name="imageFile" id="imageFile" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+                        @Html.ValidationMessage("imageFile", new { @class = "text-danger small" })
+                        <div class="form-text">JPG, PNG veya WEBP, en fazla 2 MB. Seçmezseniz mevcut görsel korunur.</div>
+                        <img id="imagePreview" class="af-preview @(string.IsNullOrEmpty(Model.AboutMainImageUrl) ? "d-none" : "")" src="@Model.AboutMainImageUrl" alt="Önizleme" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="AboutExperienceValue" class="form-label">Öne Çıkan Değer</label>
+                        <input asp-for="AboutExperienceValue" class="form-control" placeholder="5+" />
+                        <span asp-validation-for="AboutExperienceValue" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AboutExperienceTitle" class="form-label">Değer Etiketi</label>
+                        <input asp-for="AboutExperienceTitle" class="form-control" placeholder="Yıl Deneyim" />
+                        <span asp-validation-for="AboutExperienceTitle" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AboutCVUrl" class="form-label">Özgeçmiş Bağlantısı (isteğe bağlı)</label>
+                        <input asp-for="AboutCVUrl" class="form-control" placeholder="https://..." />
+                        <span asp-validation-for="AboutCVUrl" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mt-auto pt-3 d-grid gap-2">
+                        <button type="submit" class="af-btn">Kaydet</button>
+                        <a asp-action="AboutList" class="af-btn-light">Vazgeç</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('imageFile').addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        const preview = document.getElementById('imagePreview');
+        preview.src = URL.createObjectURL(file);
+        preview.classList.remove('d-none');
+    });
+</script>

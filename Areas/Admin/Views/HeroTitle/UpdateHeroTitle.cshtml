@@ -1,0 +1,49 @@
+@model HeroTitle
+@{
+    ViewData["Title"] = "Unvanı Güncelle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<partial name="_AdminFormStyles" />
+
+<div class="af container-fluid py-3">
+    <div class="row">
+        <div class="col-xl-6 col-lg-8">
+            <div class="af-card">
+                <div class="af-head">
+                    <div class="af-icon"><i class="bi bi-type"></i></div>
+                    <div><h4>Unvanı Güncelle</h4><small>#@Model.HeroTitleID numaralı unvanı düzenleyin.</small></div>
+                </div>
+                <form asp-action="UpdateHeroTitle" method="post">
+                    <input type="hidden" asp-for="HeroTitleID" />
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label">Unvan</label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Order" class="form-label">Sıra</label>
+                        <input asp-for="Order" type="number" min="1" max="100" class="form-control" />
+                        <span asp-validation-for="Order" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Durum</label>
+                        <div class="af-switch form-check form-switch m-0">
+                            <span id="statusText">@(Model.IsActive ? "Aktif" : "Pasif")</span>
+                            <input asp-for="IsActive" class="form-check-input m-0" role="switch" />
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="af-btn">Değişiklikleri Kaydet</button>
+                        <a asp-action="HeroTitleList" class="af-btn-light">Vazgeç</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('.af-switch input').addEventListener('change', function () {
+        document.getElementById('statusText').textContent = this.checked ? 'Aktif' : 'Pasif';
+    });
+</script>

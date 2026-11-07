@@ -1,0 +1,69 @@
+@model List<Social>
+@{
+    ViewData["Title"] = "Sosyal Medya";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<partial name="_AdminFormStyles" />
+
+<div class="af container-fluid py-3">
+    <div class="af-card">
+        <div class="af-head">
+            <div class="af-icon"><i class="bi bi-share"></i></div>
+            <div>
+                <h4>Sosyal Medya Bağlantıları</h4>
+                <small>Ana sayfa, iletişim bölümü ve footer'da gösterilir.</small>
+            </div>
+        </div>
+
+        <form asp-action="CreateSocial" method="post" class="row g-2 mb-4">
+            <div class="col-md-3">
+                <input name="SocialPlatform" class="form-control" placeholder="Platform (GitHub)" maxlength="50" />
+            </div>
+            <div class="col-md-4">
+                <input name="SocialURL" class="form-control" placeholder="https://github.com/kullanici" maxlength="300" />
+            </div>
+            <div class="col-md-3">
+                <input name="SocialIcon" class="form-control" placeholder="İkon (bi-github)" list="iconSuggestions" maxlength="50" />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="af-btn w-100"><i class="bi bi-plus-lg me-1"></i> Ekle</button>
+            </div>
+        </form>
+        <datalist id="iconSuggestions">
+            <option value="bi-github"></option><option value="bi-linkedin"></option><option value="bi-youtube"></option>
+            <option value="bi-instagram"></option><option value="bi-twitter-x"></option><option value="bi-facebook"></option>
+            <option value="bi-medium"></option><option value="bi-telegram"></option><option value="bi-whatsapp"></option>
+            <option value="bi-globe"></option>
+        </datalist>
+
+        <div class="table-responsive">
+            <table class="table af-table align-middle mb-0">
+                <thead>
+                    <tr><th style="width:70px">İkon</th><th>Platform</th><th>Bağlantı</th><th class="text-end">İşlemler</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><i class="bi @(item.SocialIcon.StartsWith("bi-") ? item.SocialIcon : "bi-" + item.SocialIcon) fs-5"></i></td>
+                            <td class="fw-semibold">@item.SocialPlatform</td>
+                            <td class="small text-muted">@item.SocialURL</td>
+                            <td class="text-end text-nowrap">
+                                <a asp-action="UpdateSocial" asp-route-id="@item.SocialID" class="af-icon-btn" title="Düzenle"><i class="bi bi-pencil"></i></a>
+                                <form asp-action="DeleteSocial" asp-route-id="@item.SocialID" method="post" class="d-inline">
+                                    <button type="button" class="af-icon-btn danger js-delete" data-name="@item.SocialPlatform" title="Sil"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr><td colspan="4" class="text-center text-muted py-5">Henüz bağlantı eklenmedi.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<partial name="_AdminAlerts" />

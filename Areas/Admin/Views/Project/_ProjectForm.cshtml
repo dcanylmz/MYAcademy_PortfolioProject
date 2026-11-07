@@ -1,0 +1,94 @@
+@model Project
+@* CreateProject ve UpdateProject aynı formu kullanır. ViewData: FormAction, FormTitle, FormSubtitle, SubmitText *@
+@{
+    var formAction = ViewData["FormAction"] as string ?? "CreateProject";
+}
+
+<form asp-action="@formAction" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="ProjectID" />
+
+    <div class="row g-4">
+        <div class="col-xl-8 col-lg-7">
+            <div class="af-card">
+                <div class="af-head">
+                    <div class="af-icon"><i class="bi bi-code-slash"></i></div>
+                    <div>
+                        <h4>@ViewData["FormTitle"]</h4>
+                        <small>@ViewData["FormSubtitle"]</small>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ProjectTitle" class="form-label">Proje Adı</label>
+                    <input asp-for="ProjectTitle" class="form-control" />
+                    <span asp-validation-for="ProjectTitle" class="text-danger small"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="CategoryId" class="form-label">Kategori</label>
+                        <select asp-for="CategoryId" asp-items="@(ViewBag.Categories as SelectList)" class="form-select">
+                            <option value="0">Kategori seçiniz...</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Technology" class="form-label">Kullanılan Teknolojiler</label>
+                        <input asp-for="Technology" class="form-control" placeholder="ASP.NET Core, EF Core, Bootstrap" />
+                        <span asp-validation-for="Technology" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div>
+                    <label asp-for="Description" class="form-label">Açıklama</label>
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-5">
+            <div class="af-card d-flex flex-column">
+                <div class="af-section-title">Görsel ve Durum</div>
+
+                <div class="mb-3">
+                    <label class="form-label">Proje Görseli</label>
+                    <input type="file" name="imageFile" id="imageFile" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+                    @Html.ValidationMessage("imageFile", new { @class = "text-danger small" })
+                    <div class="form-text">JPG, PNG veya WEBP, en fazla 2 MB.</div>
+
+                    <img id="imagePreview" class="af-preview @(string.IsNullOrEmpty(Model.ImageUrl) ? "d-none" : "")"
+                         src="@Model.ImageUrl" alt="Proje görseli önizleme" />
+                </div>
+
+                <label class="form-label">Durum</label>
+                <div class="af-switch form-check form-switch m-0">
+                    <span id="statusText">@(Model.IsActive ? "Aktif (sitede listelenir)" : "Pasif (sitede gizli)")</span>
+                    <input asp-for="IsActive" class="form-check-input m-0" role="switch" />
+                </div>
+
+                <div class="mt-auto pt-4 d-grid gap-2">
+                    <button type="submit" class="af-btn">@ViewData["SubmitText"]</button>
+                    <a asp-action="ProjectList" class="af-btn-light">Vazgeç</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    // Seçilen görselin anlık önizlemesi
+    document.getElementById('imageFile').addEventListener('change', function () {
+        const preview = document.getElementById('imagePreview');
+        const file = this.files[0];
+        if (!file) return;
+        preview.src = URL.createObjectURL(file);
+        preview.classList.remove('d-none');
+    });
+
+    // Durum anahtarı değişince yazıyı güncelle
+    document.querySelector('.af-switch input').addEventListener('change', function () {
+        document.getElementById('statusText').textContent =
+            this.checked ? 'Aktif (sitede listelenir)' : 'Pasif (sitede gizli)';
+    });
+</script>

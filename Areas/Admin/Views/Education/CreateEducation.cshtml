@@ -1,0 +1,13 @@
+@model Education
+@{
+    ViewData["Title"] = "Yeni Eğitim";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["FormAction"] = "CreateEducation";
+    ViewData["FormTitle"] = "Yeni Eğitim Ekle";
+    ViewData["FormSubtitle"] = "Okul, bölüm ve yıl bilgilerini girin.";
+    ViewData["SubmitText"] = "Eğitimi Kaydet";
+}
+<partial name="_AdminFormStyles" />
+<div class="af container-fluid py-3">
+    <partial name="_EducationForm" model="Model" />
+</div>

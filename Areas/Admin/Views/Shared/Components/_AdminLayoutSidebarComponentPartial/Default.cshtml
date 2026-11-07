@@ -1,4 +1,11 @@
-﻿<aside class="admin-sidebar" id="adminSidebar">
+@{
+    var current = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    string Active(params string[] controllers) => controllers.Any(c => string.Equals(current, c, StringComparison.OrdinalIgnoreCase)) ? " active" : "";
+
+    int unread = ViewBag.UnreadMessageCount is int u ? u : 0;
+    int experienceCount = ViewBag.ExperienceCount is int e ? e : 0;
+}
+<aside class="admin-sidebar" id="adminSidebar">
     <!-- Brand Header -->
     <div class="sidebar-header">
         <div class="brand-mark">
@@ -15,85 +22,97 @@
         <div class="menu-section-label">Menü</div>
         <ul class="sidebar-nav">
             <li>
-                <a href="/Admin/Dashboard/Index" class="sidebar-link">
+                <a href="/Admin/Dashboard/Index" class="sidebar-link@(Active("Dashboard"))">
                     <i class="bi bi-grid-1x2"></i>
                     <span>Dashboard</span>
                 </a>
+            </li>
+            <li>
+                <a href="/Admin/Hero/Index" class="sidebar-link@(Active("Hero", "HeroTitle"))">
+                    <i class="bi bi-house-door"></i>
+                    <span>Ana Sayfa</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/About/AboutList" class="sidebar-link@(Active("About"))">
+                    <i class="bi bi-person"></i>
+                    <span>Hakkımda</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/Skill/SkillList" class="sidebar-link@(Active("Skill"))">
+                    <i class="bi bi-stars"></i>
+                    <span>Yeteneklerim</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/Experience/ExperienceList" class="sidebar-link@(Active("Experience"))">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                    <span>Deneyimlerim</span>
+                    <span class="badge-count">@experienceCount</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/Project/ProjectList" class="sidebar-link@(Active("Project"))">
+                    <i class="bi bi-code-slash"></i>
+                    <span>Projelerim</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/Category/CategoryList" class="sidebar-link@(Active("Category"))">
+                    <i class="bi bi-tags"></i>
+                    <span>Kategoriler</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/Education/EducationList" class="sidebar-link@(Active("Education"))">
+                    <i class="bi bi-mortarboard"></i>
+                    <span>Eğitim</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/Contact/ContactList" class="sidebar-link@(Active("Contact"))">
+                    <i class="bi bi-envelope"></i>
+                    <span>İletişim</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/Message/MessageList/" class="sidebar-link@(Active("Message"))">
+                    <i class="bi bi-inbox"></i>
+                    <span>Gelen Mesajlar</span>
+                    <span class="badge-count" id="sidebarUnreadBadge" style="@(unread > 0 ? "" : "display:none")">@unread</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/Social/SocialList" class="sidebar-link@(Active("Social"))">
+                    <i class="bi bi-share"></i>
+                    <span>Sosyal Medya</span>
+                </a>
+            </li>
+        </ul>
 
-    
-                <li>
-                    <a href="#" class="sidebar-link">
-                        <i class="bi bi-person"></i>
-                        <span>Hakkımda</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="sidebar-link">
-                        <i class="bi bi-stars"></i>
-                        <span>Yeteneklerim</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="sidebar-link">
-                        <i class="bi bi-journal-bookmark-fill"></i>
-                        <span>Deneyimlerim</span>
-                        <span class="badge-count">4</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="sidebar-link">
-                        <i class="bi bi-code-slash"></i>
-                        <span>Projelerim</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="sidebar-link">
-                        <i class="bi bi-mortarboard"></i>
-                        <span>Eğitim</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="sidebar-link">
-                        <i class="bi bi-envelope"></i>
-                        <span>İletişim</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/Admin/Message/MessageList/" class="sidebar-link">
-                        <i class="bi bi-inbox"></i>
-                        <span>Gelen Mesajlar</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="sidebar-link">
-                        <i class="bi bi-gear"></i>
-                        <span>Ayarlar</span>
-                    </a>
-                </li>
-            </ul>
+        <div class="menu-section-label mt-4">Sistem & Bağlantı</div>
+        <ul class="sidebar-nav">
+            <li>
+                <a href="/Default/Index/" class="sidebar-link">
+                    <i class="bi bi-box-arrow-up-right"></i>
+                    <span>Siteyi Önizle</span>
+                </a>
+            </li>
+        </ul>
+    </div>
 
-            <div class="menu-section-label mt-4">Sistem & Bağlantı</div>
-            <ul class="sidebar-nav">
-                <li>
-                    <a href="/Default/Index/" class="sidebar-link">
-                        <i class="bi bi-box-arrow-up-right"></i>
-                        <span>Siteyi Önizle</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Admin User / Logout Footer -->
-        <div class="sidebar-footer">
-            <div class="admin-user-card">
-                <div class="user-avatar-circle">AK</div>
-                <div class="user-info">
-                    <div class="user-name">Admin Kullanıcı</div>
-                    <div class="user-role">İçerik Yöneticisi</div>
-                </div>
-                <button class="btn-logout" title="Çıkış Yap" id="btnLogout">
-                    <i class="bi bi-box-arrow-right"></i>
-                </button>
+    <!-- Admin User / Logout Footer -->
+    <div class="sidebar-footer">
+        <div class="admin-user-card">
+            <div class="user-avatar-circle">AK</div>
+            <div class="user-info">
+                <div class="user-name">Admin Kullanıcı</div>
+                <div class="user-role">İçerik Yöneticisi</div>
             </div>
+            <button class="btn-logout" title="Çıkış Yap" id="btnLogout">
+                <i class="bi bi-box-arrow-right"></i>
+            </button>
         </div>
-    </aside>
+    </div>
+</aside>

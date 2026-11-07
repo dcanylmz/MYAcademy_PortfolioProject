@@ -1,0 +1,166 @@
+@* Proje ve Kategori sayfalarının ortak görünümü (UpdateMessage ile aynı renk paleti) *@
+<style>
+    .af {
+        --g: #2f5d4e;
+        --g-soft: #e7efe9;
+        --line: #ebe8e1;
+    }
+
+    .af-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 1.75rem;
+        height: 100%;
+    }
+
+    .af-head {
+        display: flex;
+        align-items: center;
+        gap: .9rem;
+        margin-bottom: 1.5rem;
+    }
+
+        .af-head h4 { margin: 0; font-weight: 600; }
+        .af-head small { color: #8a8a85; }
+
+    .af-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        background: var(--g-soft);
+        color: var(--g);
+        display: grid;
+        place-items: center;
+        font-size: 1.3rem;
+    }
+
+    .af .form-label { font-size: .85rem; font-weight: 500; color: #6b6b66; margin-bottom: .4rem; }
+
+    .af .form-control, .af .form-select {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: .7rem .9rem;
+        background-color: #fcfbf9;
+    }
+
+        .af .form-control:focus, .af .form-select:focus {
+            border-color: var(--g);
+            background-color: #fff;
+            box-shadow: 0 0 0 .2rem rgba(47,93,78,.12);
+        }
+
+    .af textarea.form-control { min-height: 160px; resize: vertical; }
+
+    .af-section-title {
+        font-size: .75rem;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: #9a9a94;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .af-btn {
+        background: var(--g);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: .7rem 1.2rem;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+        .af-btn:hover { background: #244a3e; color: #fff; }
+
+    .af-btn-light {
+        background: transparent;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: .7rem 1.2rem;
+        color: #555;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+        .af-btn-light:hover { background: #f5f3ee; color: #333; }
+
+    .af-switch {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: .9rem 1rem;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fcfbf9;
+    }
+
+        .af-switch .form-check-input { width: 2.6em; height: 1.35em; cursor: pointer; }
+        .af-switch .form-check-input:checked { background-color: var(--g); border-color: var(--g); }
+
+    .af-table th {
+        font-size: .75rem;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        color: #9a9a94;
+        font-weight: 600;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .af-table td { border-color: var(--line); }
+
+    .af-thumb {
+        width: 64px;
+        height: 48px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+    }
+
+    .af-thumb-empty {
+        display: grid;
+        place-items: center;
+        color: #b5b5ae;
+        background: #fcfbf9;
+    }
+
+    .af-badge {
+        font-size: .78rem;
+        font-weight: 600;
+        padding: .3rem .8rem;
+        border-radius: 999px;
+        border: none;
+        cursor: pointer;
+    }
+
+        .af-badge.on { background: var(--g-soft); color: var(--g); }
+        .af-badge.off { background: #f1efe9; color: #8a8a85; }
+
+    .af-icon-btn {
+        width: 36px;
+        height: 36px;
+        display: inline-grid;
+        place-items: center;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: #fff;
+        color: #555;
+        text-decoration: none;
+    }
+
+        .af-icon-btn:hover { background: #f5f3ee; color: #222; }
+        .af-icon-btn.danger { color: #b3382c; }
+        .af-icon-btn.danger:hover { background: #fbeceb; }
+        .af-icon-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    .af-preview {
+        max-width: 100%;
+        max-height: 180px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        margin-top: .75rem;
+    }
+</style>

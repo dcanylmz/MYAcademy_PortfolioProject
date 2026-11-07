@@ -1,0 +1,70 @@
+@model List<Skill>
+@{
+    ViewData["Title"] = "Yeteneklerim";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<partial name="_AdminFormStyles" />
+
+<style>
+    .skill-track { height: 8px; background: var(--g-soft); border-radius: 99px; overflow: hidden; min-width: 140px; }
+    .skill-fill { height: 100%; background: var(--g); border-radius: 99px; }
+</style>
+
+<div class="af container-fluid py-3">
+    <div class="af-card">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div class="af-head mb-0">
+                <div class="af-icon"><i class="bi bi-stars"></i></div>
+                <div>
+                    <h4>Yeteneklerim</h4>
+                    <small>@Model.Count yetenek listeleniyor. Sitede seviyeye göre ilerleme çubuğu olarak görünür.</small>
+                </div>
+            </div>
+            <a asp-action="CreateSkill" class="af-btn"><i class="bi bi-plus-lg me-1"></i> Yeni Yetenek</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table af-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Yetenek</th>
+                        <th style="width:260px">Seviye</th>
+                        <th class="text-end">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="fw-semibold">@item.Title</div>
+                                @if (!string.IsNullOrWhiteSpace(item.Description))
+                                {
+                                    <div class="small text-muted">@item.Description</div>
+                                }
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="skill-track flex-grow-1"><div class="skill-fill" style="width:@(item.SkillLevel)%"></div></div>
+                                    <strong class="small">@item.SkillLevel%</strong>
+                                </div>
+                            </td>
+                            <td class="text-end text-nowrap">
+                                <a asp-action="UpdateSkill" asp-route-id="@item.SkillID" class="af-icon-btn" title="Düzenle"><i class="bi bi-pencil"></i></a>
+                                <form asp-action="DeleteSkill" asp-route-id="@item.SkillID" method="post" class="d-inline">
+                                    <button type="button" class="af-icon-btn danger js-delete" data-name="@item.Title" title="Sil"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr><td colspan="3" class="text-center text-muted py-5">Henüz yetenek eklenmedi.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<partial name="_AdminAlerts" />

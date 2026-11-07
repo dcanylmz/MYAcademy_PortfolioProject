@@ -1,0 +1,32 @@
+<footer class="site-footer">
+    <div class="container">
+        <div class="d-flex flex-column flex-md-row align-items-center justify-content-between pb-4 border-bottom gap-3">
+            <div>
+                <a class="navbar-brand-custom" href="#home">
+                    <span>@(ViewBag.NameSurname).</span>
+                </a>
+                <p class="text-muted small mb-0 mt-1">Kod, yaratıcılık ve sürekli öğrenme.</p>
+            </div>
+
+            <div class="d-flex gap-3">
+                <a href="#home" class="text-decoration-none text-muted small fw-medium">Ana Sayfa</a>
+                <a href="#about" class="text-decoration-none text-muted small fw-medium">Hakkımda</a>
+                <a href="#projects" class="text-decoration-none text-muted small fw-medium">Projelerim</a>
+                <a href="#contact" class="text-decoration-none text-muted small fw-medium">İletişim</a>
+            </div>
+
+            <button class="back-to-top-btn" id="backToTop" title="Yukarı Çık">
+                <i class="bi bi-arrow-up"></i>
+            </button>
+        </div>
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-3 gap-2">
+            <div class="text-muted small">
+                &copy; @DateTime.Now.Year @(ViewBag.NameSurname). Tüm hakları saklıdır.
+            </div>
+            <div class="d-flex gap-2">
+                @await Component.InvokeAsync("_DefaultSocialLinksComponentPartial", new { style = "footer" })
+            </div>
+        </div>
+    </div>
+</footer>

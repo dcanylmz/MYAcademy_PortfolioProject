@@ -1,0 +1,79 @@
+@model List<Project>
+@{
+    var categories = ViewBag.Categories as List<Category> ?? new List<Category>();
+    int? selectedCategory = ViewBag.SelectedCategoryId as int?;
+    var selectedSort = ViewBag.SelectedSort as string ?? "newest";
+}
+<section id="projects">
+    <div class="container">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3 reveal-on-scroll">
+            <div>
+                <div class="eyebrow-badge">
+                    <i class="bi bi-folder-check"></i> SEÇİLMİŞ ÇALIŞMALAR
+                </div>
+                <h2 class="section-title mb-1">Fikirden Ürüne Dönüşen Projeler</h2>
+            </div>
+
+            <div class="d-flex flex-column align-items-md-end gap-2">
+                <!-- Kategori filtresi: sayfa yeniden yüklenir, #projects bölümüne döner -->
+                <div class="d-flex flex-wrap gap-2" id="projectFilters">
+                    <a class="filter-btn text-decoration-none @(selectedCategory == null ? "active" : "")"
+                       href="@Url.Action("Index", "Default", new { sort = selectedSort }, null, null, "projects")">Tümü</a>
+                    @foreach (var category in categories)
+                    {
+                        <a class="filter-btn text-decoration-none @(selectedCategory == category.CategoryId ? "active" : "")"
+                           href="@Url.Action("Index", "Default", new { category = category.CategoryId, sort = selectedSort }, null, null, "projects")">@category.CategoryName</a>
+                    }
+                </div>
+
+                <!-- Sıralama -->
+                <select class="form-select form-select-sm" style="max-width: 190px;" aria-label="Proje sıralaması" onchange="location.href = this.value">
+                    <option value="@Url.Action("Index", "Default", new { category = selectedCategory, sort = "newest" }, null, null, "projects")" selected="@(selectedSort == "newest")">En yeni önce</option>
+                    <option value="@Url.Action("Index", "Default", new { category = selectedCategory, sort = "oldest" }, null, null, "projects")" selected="@(selectedSort == "oldest")">En eski önce</option>
+                    <option value="@Url.Action("Index", "Default", new { category = selectedCategory, sort = "title" }, null, null, "projects")" selected="@(selectedSort == "title")">Ada göre (A-Z)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row g-4" id="projectGrid">
+            @foreach (var project in Model)
+            {
+                var technologies = (project.Technology ?? string.Empty)
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+                <div class="col-lg-6 project-item reveal-on-scroll">
+                    <div class="project-card">
+                        <div class="project-thumb-wrap">
+                            @if (!string.IsNullOrEmpty(project.ImageUrl))
+                            {
+                                <img src="@project.ImageUrl" alt="@project.ProjectTitle" class="project-thumb-img">
+                            }
+                            else
+                            {
+                                <div class="d-flex align-items-center justify-content-center h-100 bg-light"><i class="bi bi-image fs-1 text-muted"></i></div>
+                            }
+                            <span class="project-category-tag">@project.Category?.CategoryName</span>
+                        </div>
+                        <div class="project-body">
+                            <h3 class="h4 fw-bold mb-2">@project.ProjectTitle</h3>
+                            <p class="text-muted small mb-4 flex-grow-1">@project.Description</p>
+                            <div class="mb-4">
+                                @foreach (var tech in technologies)
+                                {
+                                    <span class="tech-badge">@tech</span>
+                                }
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between pt-3 border-top">
+                                <span class="text-muted small"><i class="bi bi-calendar3 me-1"></i>@(project.CreatedDate.Year > 1 ? project.CreatedDate.ToString("MMMM yyyy", new System.Globalization.CultureInfo("tr-TR")) : "")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (!Model.Any())
+            {
+                <div class="col-12 text-center text-muted py-5">Bu kategoride gösterilecek proje bulunamadı.</div>
+            }
+        </div>
+    </div>
+</section>

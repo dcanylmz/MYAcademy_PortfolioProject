@@ -1,0 +1,8 @@
+@* Tek kayıtlı modüllerin (Hakkımda, İletişim, Ana Sayfa) özet görünümü *@
+<style>
+    .af-kv { display: grid; grid-template-columns: 200px 1fr; gap: .75rem 1.25rem; margin: 0; }
+    .af-kv dt { font-size: .8rem; font-weight: 600; color: #9a9a94; text-transform: uppercase; letter-spacing: .05em; }
+    .af-kv dd { margin: 0; white-space: pre-line; word-break: break-word; }
+    .af-empty { text-align: center; padding: 3rem 1rem; color: #8a8a85; }
+    @@media (max-width: 575px) { .af-kv { grid-template-columns: 1fr; gap: .15rem; } .af-kv dd { margin-bottom: .75rem; } }
+</style>

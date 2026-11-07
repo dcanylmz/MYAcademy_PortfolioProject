@@ -1,0 +1,55 @@
+@model Education
+<div class="row">
+    <div class="col-xl-7 col-lg-9">
+        <div class="af-card">
+            <div class="af-head">
+                <div class="af-icon"><i class="bi bi-mortarboard"></i></div>
+                <div>
+                    <h4>@ViewData["FormTitle"]</h4>
+                    <small>@ViewData["FormSubtitle"]</small>
+                </div>
+            </div>
+
+            <form asp-action="@(ViewData["FormAction"] as string)" method="post">
+                <input type="hidden" asp-for="EducationID" />
+
+                <div class="mb-3">
+                    <label asp-for="SchoolName" class="form-label">Okul / Kurum</label>
+                    <input asp-for="SchoolName" class="form-control" />
+                    <span asp-validation-for="SchoolName" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Department" class="form-label">Bölüm / Program</label>
+                    <input asp-for="Department" class="form-control" />
+                    <span asp-validation-for="Department" class="text-danger small"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="StartYear" class="form-label">Başlangıç Yılı</label>
+                        <input asp-for="StartYear" type="number" min="1950" max="2100" class="form-control" />
+                        <span asp-validation-for="StartYear" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="EndYear" class="form-label">Bitiş Yılı</label>
+                        <input asp-for="EndYear" type="number" min="1950" max="2100" class="form-control" />
+                        <div class="form-text">Eğitim devam ediyorsa boş bırakın.</div>
+                        <span asp-validation-for="EndYear" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Description" class="form-label">Açıklama (isteğe bağlı)</label>
+                    <textarea asp-for="Description" class="form-control" style="min-height:100px"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="af-btn">@ViewData["SubmitText"]</button>
+                    <a asp-action="EducationList" class="af-btn-light">Vazgeç</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

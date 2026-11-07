@@ -1,0 +1,59 @@
+@model Contact
+@{
+    ViewData["Title"] = "İletişim Düzenle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<partial name="_AdminFormStyles" />
+
+<div class="af container-fluid py-3">
+    <div class="row">
+        <div class="col-xl-7 col-lg-9">
+            <div class="af-card">
+                <div class="af-head">
+                    <div class="af-icon"><i class="bi bi-envelope"></i></div>
+                    <div>
+                        <h4>İletişim Bilgilerini Düzenle</h4>
+                        <small>Değişiklikler sitedeki iletişim bölümüne yansır.</small>
+                    </div>
+                </div>
+
+                <form asp-action="UpdateContact" method="post">
+                    <input type="hidden" asp-for="ContactID" />
+
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label">Başlık</label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Açıklama</label>
+                        <textarea asp-for="Description" class="form-control" style="min-height:110px"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Email" class="form-label">E-posta</label>
+                            <input asp-for="Email" type="email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="PhoneNumber" class="form-label">Telefon (isteğe bağlı)</label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="Location" class="form-label">Konum</label>
+                        <input asp-for="Location" class="form-control" />
+                        <span asp-validation-for="Location" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="af-btn">Kaydet</button>
+                        <a asp-action="ContactList" class="af-btn-light">Vazgeç</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

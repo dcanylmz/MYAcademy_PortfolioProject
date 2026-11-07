@@ -1,0 +1,41 @@
+@* SweetAlert2: TempData bildirimleri + .js-delete butonları için silme onayı *@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    (function () {
+        const toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+
+        @if (TempData["SuccessMessage"] is string successMessage)
+        {
+            <text>toast.fire({ icon: 'success', title: @Json.Serialize(successMessage) });</text>
+        }
+        @if (TempData["ErrorMessage"] is string errorMessage)
+        {
+            <text>toast.fire({ icon: 'error', title: @Json.Serialize(errorMessage) });</text>
+        }
+
+        document.querySelectorAll('.js-delete').forEach(function (button) {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                const form = button.closest('form');
+                Swal.fire({
+                    title: 'Silmek istediğinize emin misiniz?',
+                    text: '"' + (button.dataset.name || 'Bu kayıt') + '" kalıcı olarak silinecek.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#b3382c',
+                    cancelButtonColor: '#6b6b66',
+                    confirmButtonText: 'Evet, sil',
+                    cancelButtonText: 'Vazgeç'
+                }).then(function (result) {
+                    if (result.isConfirmed) form.submit();
+                });
+            });
+        });
+    })();
+</script>

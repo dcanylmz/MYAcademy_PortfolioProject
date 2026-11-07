@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using MYAcademy_PortfolioProject.Context;
 using MYAcademy_PortfolioProject.Entities;
 
 namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
 {
+    // İletişim bilgileri tek kayıttır; sitedeki iletişim bölümünü besler.
     [Area("Admin")]
     public class ContactController : Controller
     {
@@ -16,20 +17,38 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
 
         public IActionResult ContactList()
         {
-            var values = _context.Contacts.ToList();
-            return View(values);
+            return View(_context.Contacts.FirstOrDefault());
         }
+
         [HttpGet]
-        public IActionResult CreateContact()
+        public IActionResult UpdateContact()
         {
-            return View();
+            return View(_context.Contacts.FirstOrDefault() ?? new Contact());
         }
+
         [HttpPost]
-        public IActionResult CreateContact(Contact contact)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateContact(Contact contact)
         {
-            _context.Contacts.Add(contact);
-            _context.SaveChanges();
-            return RedirectToAction("ContactList");
+            if (!ModelState.IsValid)
+                return View(contact);
+
+            var existing = _context.Contacts.FirstOrDefault();
+            if (existing == null)
+            {
+                existing = new Contact();
+                _context.Contacts.Add(existing);
+            }
+
+            existing.Title = contact.Title;
+            existing.Description = contact.Description;
+            existing.Email = contact.Email;
+            existing.Location = contact.Location;
+            existing.PhoneNumber = contact.PhoneNumber;
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "İletişim bilgileri kaydedildi.";
+            return RedirectToAction(nameof(ContactList));
         }
     }
 }

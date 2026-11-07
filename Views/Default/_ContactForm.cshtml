@@ -1,0 +1,96 @@
+@* Ana sayfadaki iletişim formu. Gönderim sayfa yenilenmeden fetch ile ContactController.SendMessage'a yapılır. *@
+<form id="contactForm" asp-controller="Contact" asp-action="SendMessage" method="post" novalidate>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label for="fullName" class="form-label small fw-semibold">Adınız Soyadınız *</label>
+            <input type="text" class="form-control form-control-custom" id="fullName" name="SenderName" maxlength="100" placeholder="Örn: Ahmet Yılmaz">
+            <div class="text-danger small mt-1" data-error-for="SenderName"></div>
+        </div>
+        <div class="col-md-6">
+            <label for="emailAddr" class="form-label small fw-semibold">E-posta Adresiniz *</label>
+            <input type="email" class="form-control form-control-custom" id="emailAddr" name="SenderEmail" maxlength="150" placeholder="ad@ornek.com">
+            <div class="text-danger small mt-1" data-error-for="SenderEmail"></div>
+        </div>
+        <div class="col-12">
+            <label for="subject" class="form-label small fw-semibold">Konu *</label>
+            <input type="text" class="form-control form-control-custom" id="subject" name="SenderSubject" maxlength="150" placeholder="Örn: Kurumsal .NET Eğitimi veya Danışmanlık">
+            <div class="text-danger small mt-1" data-error-for="SenderSubject"></div>
+        </div>
+        <div class="col-12">
+            <label for="message" class="form-label small fw-semibold">Mesajınız *</label>
+            <textarea class="form-control form-control-custom" id="message" name="MessageDetail" rows="5" maxlength="2000" placeholder="Projeniz veya sorunuz hakkında detayları paylaşın..."></textarea>
+            <div class="text-danger small mt-1" data-error-for="MessageDetail"></div>
+        </div>
+
+        @* Honeypot: gerçek kullanıcılar görmez, spam botları doldurur. *@
+        <div style="position:absolute; left:-9999px;" aria-hidden="true">
+            <label for="website">Web sitesi</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div class="col-12 pt-2">
+            <button type="submit" class="btn-sage w-100 justify-content-center py-3 fs-6">
+                <i class="bi bi-send-fill"></i>
+                <span>Mesajımı Gönder</span>
+            </button>
+            <div id="formFeedback" class="mt-2 text-center small text-muted"></div>
+            <div class="text-muted text-center small mt-3" style="font-size: 0.78rem;">
+                <i class="bi bi-shield-check me-1"></i> Gönderilen bilgiler gizlilik ilkeleri doğrultusunda korunmaktadır.
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    (function () {
+        const form = document.getElementById('contactForm');
+        const feedback = document.getElementById('formFeedback');
+        const submitButton = form.querySelector('button[type="submit"]');
+
+        function setFeedback(text, cssClass) {
+            feedback.textContent = '';
+            const span = document.createElement('span');
+            span.className = cssClass;
+            span.textContent = text;
+            feedback.appendChild(span);
+        }
+
+        function clearErrors() {
+            form.querySelectorAll('[data-error-for]').forEach(function (el) { el.textContent = ''; });
+            form.querySelectorAll('.is-invalid').forEach(function (el) { el.classList.remove('is-invalid'); });
+        }
+
+        function showErrors(errors) {
+            Object.keys(errors).forEach(function (field) {
+                const target = form.querySelector('[data-error-for="' + field + '"]');
+                if (target) target.textContent = errors[field];
+                const input = form.querySelector('[name="' + field + '"]');
+                if (input) input.classList.add('is-invalid');
+            });
+        }
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            clearErrors();
+            submitButton.disabled = true;
+            setFeedback('Gönderiliyor...', 'text-muted');
+
+            try {
+                const response = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    form.reset();
+                    setFeedback(result.message, 'text-success');
+                } else {
+                    showErrors(result.errors || {});
+                    setFeedback(result.message || 'Mesaj gönderilemedi.', 'text-danger');
+                }
+            } catch (err) {
+                setFeedback('Bir sorun oluştu. Lütfen daha sonra tekrar deneyin.', 'text-danger');
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+    })();
+</script>

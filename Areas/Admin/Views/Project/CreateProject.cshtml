@@ -1,0 +1,15 @@
+@model Project
+@{
+    ViewData["Title"] = "Yeni Proje";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    ViewData["FormAction"] = "CreateProject";
+    ViewData["FormTitle"] = "Yeni Proje Ekle";
+    ViewData["FormSubtitle"] = "Proje bilgilerini girin ve bir görsel yükleyin.";
+    ViewData["SubmitText"] = "Projeyi Kaydet";
+}
+<partial name="_AdminFormStyles" />
+
+<div class="af container-fluid py-3">
+    <partial name="_ProjectForm" model="Model" />
+</div>

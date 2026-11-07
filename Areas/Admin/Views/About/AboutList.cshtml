@@ -1,99 +1,47 @@
-﻿﻿
-@model About
-
+@model About?
 @{
-    ViewData["Title"] = "Hakkımda Bilgileri";
+    ViewData["Title"] = "Hakkımda";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
+<partial name="_AdminFormStyles" />
+<partial name="_AdminSummaryStyles" />
 
-<div class="content-header-row">
-    <div>
-        <h2 class="page-title">Hakkımda Bilgileri</h2>
-        <p class="page-subtitle">
-            Hakkımızda bilgilerinizi buradan yönetebilirsiniz.
-        </p>
-    </div>
+<div class="af container-fluid py-3">
+    <div class="af-card">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div class="af-head mb-0">
+                <div class="af-icon"><i class="bi bi-person"></i></div>
+                <div>
+                    <h4>Hakkımda</h4>
+                    <small>Sitedeki "Beni Tanıyın" bölümünü besler.</small>
+                </div>
+            </div>
+            <a asp-action="UpdateAbout" class="af-btn"><i class="bi bi-pencil me-1"></i> @(Model == null ? "Bilgileri Ekle" : "Düzenle")</a>
+        </div>
 
-    <a href="/Admin/About/CreateAbout" class="btn-pastel-primary">
-        <i class="bi bi-plus-lg"></i>
-        Yeni Hakkımda Bilgisi
-    </a>
-</div>
-
-<div class="data-table-card">
-    <div class="table-responsive">
-        <table class="table custom-admin-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Görsel</th>
-                    <th>Ad Soyad</th>
-                    <th>Meslek</th>
-                    <th>Konum</th>
-                    <th class="text-center">İşlemler</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @if (Model != null)
+        @if (Model == null)
+        {
+            <div class="af-empty">Henüz hakkımda bilgisi girilmedi.</div>
+        }
+        else
+        {
+            <div class="mb-4">
+                @if (!string.IsNullOrEmpty(Model.AboutMainImageUrl))
                 {
-                    <tr>
-                        <td>@Model.AboutId</td>
-
-                        <td>
-                            @if (!string.IsNullOrEmpty(Model.AboutMainImageUrl))
-                            {
-                                <img src="@Url.Content(Model.AboutMainImageUrl)"
-                                     alt="@Model.AboutNameSurname"
-                                     style="width:55px; height:55px; object-fit:cover; border-radius:10px;" />
-                            }
-                            else
-                            {
-                                <span class="text-muted">Görsel yok</span>
-                            }
-                        </td>
-
-                        <td>
-                            <strong>@Model.AboutNameSurname</strong>
-                        </td>
-
-                        <td>@Model.AboutProfession</td>
-
-                        <td>
-                            <i class="bi bi-geo-alt me-1"></i>
-                            @Model.AboutLocation
-                        </td>
-
-                        <td class="text-center">
-                            <a href="/Admin/About/UpdateAbout/@Model.AboutId"
-                               class="btn-action-icon btn-edit"
-                               title="Düzenle">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-
-                            <form action="/Admin/About/DeleteAbout/@Model.AboutId"
-                                  method="post"
-                                  class="delete-form d-inline">
-                                @Html.AntiForgeryToken()
-
-                                <button type="submit"
-                                        class="btn-action-icon btn-delete"
-                                        title="Sil">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
+                    <img src="@Model.AboutMainImageUrl" alt="Profil görseli" class="af-thumb" style="width:96px;height:96px;" />
                 }
-                else
-                {
-                    <tr>
-                        <td colspan="6" class="text-center py-4">
-                            Henüz hakkımda bilgisi eklenmemiş.
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+            </div>
+            <dl class="af-kv">
+                <dt>Ad Soyad</dt><dd>@Model.AboutNameSurname</dd>
+                <dt>Meslek / Unvan</dt><dd>@Model.AboutProfession</dd>
+                <dt>Konum</dt><dd>@Model.AboutLocation</dd>
+                <dt>Başlık</dt><dd>@Model.AboutTitle</dd>
+                <dt>Metin</dt><dd>@Model.AboutContent</dd>
+                <dt>Öne Çıkan Bilgi</dt><dd>@Model.AboutExperienceValue @Model.AboutExperienceTitle</dd>
+                <dt>Özgeçmiş Bağlantısı</dt><dd>@(string.IsNullOrWhiteSpace(Model.AboutCVUrl) ? "-" : Model.AboutCVUrl)</dd>
+            </dl>
+        }
     </div>
 </div>
+
+<partial name="_AdminAlerts" />

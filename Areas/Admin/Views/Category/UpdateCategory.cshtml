@@ -1,0 +1,37 @@
+@model Category
+@{
+    ViewData["Title"] = "Kategoriyi Güncelle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<partial name="_AdminFormStyles" />
+
+<div class="af container-fluid py-3">
+    <div class="row">
+        <div class="col-xl-6 col-lg-8">
+            <div class="af-card">
+                <div class="af-head">
+                    <div class="af-icon"><i class="bi bi-tags"></i></div>
+                    <div>
+                        <h4>Kategoriyi Güncelle</h4>
+                        <small>#@Model.CategoryId numaralı kategorinin adını düzenleyin.</small>
+                    </div>
+                </div>
+
+                <form asp-action="UpdateCategory" method="post">
+                    <input type="hidden" asp-for="CategoryId" />
+
+                    <div class="mb-4">
+                        <label asp-for="CategoryName" class="form-label">Kategori Adı</label>
+                        <input asp-for="CategoryName" class="form-control" />
+                        <span asp-validation-for="CategoryName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="af-btn">Değişiklikleri Kaydet</button>
+                        <a asp-action="CategoryList" class="af-btn-light">Vazgeç</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,18 +1,39 @@
-﻿@model List<Contact>
-
+@model Contact?
 @{
-    ViewData["Title"] = "ContactList";
+    ViewData["Title"] = "İletişim";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
-<table class="table table-hover">
-    <tr>
-        <th>#</th>
-        <th>Baslik</th>
-        <th>Aciklama</th>
-        <th>Email</th>
-        <th>Telefon</th>
-        <th>Lokasyon</th>
-        <th>Sil</th>
-        <th>Guncelle</th>
-    </tr>
-</table>
+<partial name="_AdminFormStyles" />
+<partial name="_AdminSummaryStyles" />
+
+<div class="af container-fluid py-3">
+    <div class="af-card">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div class="af-head mb-0">
+                <div class="af-icon"><i class="bi bi-envelope"></i></div>
+                <div>
+                    <h4>İletişim Bilgileri</h4>
+                    <small>Sitedeki iletişim bölümünü besler. Sosyal bağlantılar için <a asp-controller="Social" asp-action="SocialList">Sosyal Medya</a> sayfasını kullanın.</small>
+                </div>
+            </div>
+            <a asp-action="UpdateContact" class="af-btn"><i class="bi bi-pencil me-1"></i> @(Model == null ? "Bilgileri Ekle" : "Düzenle")</a>
+        </div>
+
+        @if (Model == null)
+        {
+            <div class="af-empty">Henüz iletişim bilgisi girilmedi.</div>
+        }
+        else
+        {
+            <dl class="af-kv">
+                <dt>Başlık</dt><dd>@Model.Title</dd>
+                <dt>Açıklama</dt><dd>@Model.Description</dd>
+                <dt>E-posta</dt><dd>@Model.Email</dd>
+                <dt>Konum</dt><dd>@Model.Location</dd>
+                <dt>Telefon</dt><dd>@(string.IsNullOrWhiteSpace(Model.PhoneNumber) ? "-" : Model.PhoneNumber)</dd>
+            </dl>
+        }
+    </div>
+</div>
+
+<partial name="_AdminAlerts" />

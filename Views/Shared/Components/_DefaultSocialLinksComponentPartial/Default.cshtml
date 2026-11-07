@@ -1,0 +1,13 @@
+@model List<Social>
+@foreach (var s in Model)
+{
+    var icon = s.SocialIcon.StartsWith("bi-") ? s.SocialIcon : "bi-" + s.SocialIcon;
+    if ((ViewBag.Style as string) == "footer")
+    {
+        <a href="@s.SocialURL" target="_blank" rel="noopener noreferrer" class="text-muted small text-decoration-none me-2"><i class="bi @icon"></i> @s.SocialPlatform</a>
+    }
+    else
+    {
+        <a href="@s.SocialURL" target="_blank" rel="noopener noreferrer" class="social-pill" title="@s.SocialPlatform"><i class="bi @icon"></i></a>
+    }
+}
